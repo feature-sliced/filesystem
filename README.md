@@ -19,8 +19,4 @@ npm install --save @feature-sliced/filesystem
 
 Type definitions are built in 😎.
 
-## Usage
-
-The only named export of this package is a function `locateNearestRoot` that accepts a path to a file or a folder and returns an object that describes the found root.
-
 [feature-sliced-design]: https://feature-sliced.design
