@@ -115,8 +115,8 @@ export interface Segment {
 }
 
 export interface FileLocation {
-  type: "file-location";
   layer: LayerName;
   slice: SliceName | null;
   segment: SegmentName | null;
+  fsdRoot: string;
 }
