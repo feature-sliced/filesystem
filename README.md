@@ -19,4 +19,20 @@ npm install --save @feature-sliced/filesystem
 
 Type definitions are built in 😎.
 
+## Usage
+
+```ts
+import { locateInFsdRoot } from "@feature-sliced/filesystem";
+
+console.log(
+  locateInFsdRoot("/home/ubuntu/frontend/src/pages/home/ui/HomePage.tsx"),
+);
+// {
+//   fsdRoot: "/home/ubuntu/frontend/src",
+//   layer: "pages",
+//   slice: "home",
+//   segment: "ui",
+// }
+```
+
 [feature-sliced-design]: https://feature-sliced.design

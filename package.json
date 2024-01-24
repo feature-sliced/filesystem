@@ -1,10 +1,11 @@
 {
   "name": "@feature-sliced/filesystem",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A set of utilities for locating and working with FSD roots in the file system.",
   "scripts": {
     "build": "tsup src/index.ts --dts --format esm,cjs --clean",
     "watch": "npm run build -- --watch src",
+    "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build",
     "lint": "eslint --cache .",
     "format": "prettier --write . --cache",
@@ -44,5 +45,14 @@
     "slices",
     "segments"
   ],
-  "license": "ISC"
+  "license": "ISC",
+  "homepage": "https://github.com/feature-sliced/filesystem",
+  "bugs": "https://github.com/feature-sliced/filesystem/issues",
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE",
+    "package.json"
+  ]
 }
