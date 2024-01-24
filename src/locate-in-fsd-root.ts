@@ -17,7 +17,9 @@ export interface LocateInFsdRootOptions {
    *   shared: ["ui", "config", "i18n"],
    * }
    */
-  segments?: Array<SegmentName> | Partial<Record<LayerName, Array<SegmentName>>>;
+  segments?:
+    | Array<SegmentName>
+    | Partial<Record<LayerName, Array<SegmentName>>>;
   /**
    * OS-specific delimiter between path segments.
    *
@@ -56,7 +58,10 @@ export function locateInFsdRoot(
     return null;
   }
 
-  const fsdRoot = reversedPathSegments.slice(layerIndex + 1).reverse().join(pathSeparator);
+  const fsdRoot = reversedPathSegments
+    .slice(layerIndex + 1)
+    .reverse()
+    .join(pathSeparator);
   const layer = reversedPathSegments[layerIndex] as LayerName;
 
   let segmentIndex = -1;

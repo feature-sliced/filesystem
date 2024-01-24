@@ -98,35 +98,35 @@ describe("With custom segments", () => {
     {
       path: "/app/src/pages/home/assets/icon.svg",
       options: {
-        segments: ["assets", "ui", "model", "lib", "api", "config"]
+        segments: ["assets", "ui", "model", "lib", "api", "config"],
       },
       expected: {
         fsdRoot: "/app/src",
         layer: "pages",
         slice: "home",
         segment: "assets",
-      }
+      },
     },
     {
       path: "/app/src/pages/home/assets/icon.svg",
       options: {
-        segments: {pages: ["assets", "ui", "model", "lib", "api", "config"]}
+        segments: { pages: ["assets", "ui", "model", "lib", "api", "config"] },
       },
       expected: {
         fsdRoot: "/app/src",
         layer: "pages",
         slice: "home",
         segment: "assets",
-      }
-    }
+      },
+    },
   ];
 
-  for (const { path,  options, expected } of expectations) {
+  for (const { path, options, expected } of expectations) {
     test(`${path} (${JSON.stringify(options)})`, () => {
       expect(locateInFsdRoot(path, options)).toStrictEqual(expected);
     });
   }
-})
+});
 
 describe("With another path separator", () => {
   const expectations = [
@@ -163,9 +163,9 @@ describe("With another path separator", () => {
     },
   ];
 
-  for (const { path,  options, expected } of expectations) {
+  for (const { path, options, expected } of expectations) {
     test(`${path} (${JSON.stringify(options)})`, () => {
       expect(locateInFsdRoot(path, options)).toStrictEqual(expected);
     });
   }
-})
+});
