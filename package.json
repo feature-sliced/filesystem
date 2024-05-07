@@ -20,7 +20,6 @@
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.2.5",
     "tsup": "^8.0.2",
-    "typescript": "^5.4.5",
     "vitest": "^1.6.0"
   },
   "main": "dist/index.js",
@@ -54,5 +53,8 @@
     "README.md",
     "LICENSE",
     "package.json"
-  ]
+  ],
+  "dependencies": {
+    "typescript": "^5.4.5"
+  }
 }

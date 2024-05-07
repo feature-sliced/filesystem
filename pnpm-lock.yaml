@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+dependencies:
+  typescript:
+    specifier: ^5.4.5
+    version: 5.4.5
+
 devDependencies:
   '@total-typescript/ts-reset':
     specifier: ^0.5.1
@@ -29,9 +34,6 @@ devDependencies:
   tsup:
     specifier: ^8.0.2
     version: 8.0.2(typescript@5.4.5)
-  typescript:
-    specifier: ^5.4.5
-    version: 5.4.5
   vitest:
     specifier: ^1.6.0
     version: 1.6.0
@@ -2325,7 +2327,6 @@ packages:
     resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
     engines: {node: '>=14.17'}
     hasBin: true
-    dev: true
 
   /ufo@1.5.3:
     resolution: {integrity: sha512-Y7HYmWaFwPUmkoQCUIAYpKqkOf+SbVj/2fJJZ4RJMCfZp0rTGwRbzQD+HghfnhKOjL9E01okqz+ncJskGYfBNw==}
