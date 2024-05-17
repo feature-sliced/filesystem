@@ -22,6 +22,14 @@ import { resolveModuleName, sys, type CompilerOptions } from "typescript";
  * }
  * ```
  *
+ * ```tsx
+ * resolveImport(
+ *   "~/shared/ui",
+ *   "./src/pages/home/ui/HomePage.tsx",
+ *   { moduleResolution: "Bundler", baseUrl: ".", paths: { "~/*": ["./src/*"] } },
+ *   fs.existsSync
+ * );
+ * ```
  * Expected output: `src/shared/ui/index.ts`
  */
 export function resolveImport(

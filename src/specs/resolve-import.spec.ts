@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import { ModuleResolutionKind } from "typescript";
-import { resolveImport } from "..";
+import { resolveImport } from "../index.js";
 
 test("Basic", () => {
   const tsCompilerOptions = {
