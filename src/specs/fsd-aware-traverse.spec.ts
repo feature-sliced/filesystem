@@ -1,9 +1,6 @@
 import { test, expect } from "vitest";
 
-import {
-  getSlices,
-  type Folder,
-} from "../index.js";
+import { getSlices, type Folder } from "../index.js";
 import { parseIntoFolder } from "./prepare-test.js";
 
 test("getSlices", () => {
