@@ -66,7 +66,24 @@ resolveImport(
 
 Expected output: `/project/src/shared/ui/index.ts`.
 
-## FSD-aware traversal
+### `layerSequence`, `unslicedLayers`, and `conventionalSegmentNames`
+
+Definitions of important names in FSD.
+
+```ts
+export const layerSequence: Array<LayerName> = [
+  "shared",
+  "entities",
+  "features",
+  "widgets",
+  "pages",
+  "app",
+];
+export const unslicedLayers = ["shared", "app"];
+export const conventionalSegmentNames = ["ui", "api", "lib", "model", "config"];
+```
+
+### FSD-aware traversal
 
 A set of traversal functions for a simple representation of a file system:
 
@@ -83,7 +100,7 @@ export interface Folder {
 }
 ```
 
-### `getLayers`
+#### `getLayers`
 
 ```ts
 export type LayerName =
@@ -99,7 +116,7 @@ function getLayers(fsdRoot: Folder): Partial<Record<LayerName, Folder>>;
 
 Extract layers from an FSD root. Returns a mapping of layer name to folder object.
 
-### `getSlices`
+#### `getSlices`
 
 ```ts
 function getSlices(
@@ -112,7 +129,7 @@ Extract slices from a **sliced** layer. Returns a mapping of slice name (potenti
 
 A folder is detected as a slice when it has at least one folder/file with a name of a conventional segment (`ui`, `api`, `model`, `lib`, `config`). If your project contains slices that don't have those segments, you can provide additional segment names.
 
-### `getSegments`
+#### `getSegments`
 
 ```ts
 function getSegments(
@@ -122,7 +139,7 @@ function getSegments(
 
 Extract segments from a slice or an **unsliced** layer. Returns a mapping of segment name to folder or file object.
 
-### `getAllSlices`
+#### `getAllSlices`
 
 ```ts
 function getAllSlices(
@@ -135,7 +152,7 @@ Extract slices from all layers of an FSD root. Returns a mapping of slice name (
 
 A folder is detected as a slice when it has at least one folder/file with a name of a conventional segment (`ui`, `api`, `model`, `lib`, `config`). If your project contains slices that don't have those segments, you can provide additional segment names.
 
-### `getAllSegments`
+#### `getAllSegments`
 
 ```ts
 function getAllSegments(fsdRoot: Folder): Array<{
@@ -148,7 +165,7 @@ function getAllSegments(fsdRoot: Folder): Array<{
 
 Extract segments from all slices and layers of an FSD root. Returns a flat array of segments along with their name and location in the FSD root (layer, slice).
 
-### `isSliced`
+#### `isSliced`
 
 ```ts
 export type LayerName =
@@ -164,7 +181,7 @@ function isSliced(layerOrName: Folder | LayerName): boolean;
 
 Determine if this layer is sliced. You can pass the folder of a layer or the name (lowercase). Only layers Shared and App are not sliced, the rest are.
 
-### `getIndex`
+#### `getIndex`
 
 ```ts
 function getIndex(fileOrFolder: File | Folder): File | undefined;

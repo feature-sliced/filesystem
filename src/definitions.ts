@@ -23,3 +23,14 @@ export type LayerName =
   | "widgets"
   | "pages"
   | "app";
+
+export const layerSequence: Array<LayerName> = [
+  "shared",
+  "entities",
+  "features",
+  "widgets",
+  "pages",
+  "app",
+];
+export const unslicedLayers = ["shared", "app"];
+export const conventionalSegmentNames = ["ui", "api", "lib", "model", "config"];

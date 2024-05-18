@@ -1,16 +1,6 @@
 import { basename, join } from "node:path";
-import type { File, Folder, LayerName } from "./definitions.js";
 
-const layerNames: Array<LayerName> = [
-  "shared",
-  "entities",
-  "features",
-  "widgets",
-  "pages",
-  "app",
-];
-
-const conventionalSegmentNames = ["ui", "api", "lib", "model", "config"];
+import { conventionalSegmentNames, layerSequence, unslicedLayers, type File, type Folder, type LayerName } from "./definitions.js";
 
 /**
  * Extract layers from an FSD root.
@@ -22,7 +12,7 @@ export function getLayers(fsdRoot: Folder): Partial<Record<LayerName, Folder>> {
     fsdRoot.children
       .filter(
         (child) =>
-          child.type === "folder" && layerNames.includes(basename(child.path)),
+          child.type === "folder" && layerSequence.includes(basename(child.path)),
       )
       .map((child) => [basename(child.path) as LayerName, child]),
   );
@@ -141,7 +131,7 @@ export function getAllSegments(fsdRoot: Folder): Array<{
  * Only layers Shared and App are not sliced, the rest are.
  */
 export function isSliced(layerOrName: Folder | LayerName): boolean {
-  return !["shared", "app"].includes(
+  return !unslicedLayers.includes(
     basename(typeof layerOrName === "string" ? layerOrName : layerOrName.path),
   );
 }
