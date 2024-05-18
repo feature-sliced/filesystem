@@ -169,7 +169,7 @@ export function getIndex(fileOrFolder: File | Folder): File | undefined {
  * Slices are defined as folders that contain at least one segment.
  * Additional segment names can be provided if some slice in project contains only unconventional segments.
  */
-function isSlice(
+export function isSlice(
   folder: Folder,
   additionalSegmentNames: Array<string> = [],
 ): boolean {

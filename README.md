@@ -167,6 +167,9 @@ Extract segments from all slices and layers of an FSD root. Returns a flat array
 
 #### `isSliced`
 
+> [!NOTE]  
+> Not to be confused with `isSlice`, a function that determines if a folder looks like a slice based on the segments that it contains.
+
 ```ts
 export type LayerName =
   | "shared"
@@ -188,5 +191,21 @@ function getIndex(fileOrFolder: File | Folder): File | undefined;
 ```
 
 Get the index (public API) of a slice or segment. When a segment is a file, it is its own index.
+
+#### `isSlice`
+
+> [!NOTE]  
+> Not to be confused with `isSliced`, a function that determines if a layer should contain slices according to FSD.
+
+```ts
+function isSlice(
+  folder: Folder,
+  additionalSegmentNames: Array<string> = [],
+): boolean;
+```
+
+Determine if this folder is a slice.
+
+Slices are defined as folders that contain at least one segment. Additional segment names can be provided if some slice in project contains only unconventional segments.
 
 [feature-sliced-design]: https://feature-sliced.design

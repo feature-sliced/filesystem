@@ -1,6 +1,6 @@
 {
   "name": "@feature-sliced/filesystem",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "A set of utilities for locating and working with FSD roots in the file system.",
   "scripts": {
     "build": "tsup src/index.ts --dts --format esm,cjs --clean",
