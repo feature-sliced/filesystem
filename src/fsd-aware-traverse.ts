@@ -102,6 +102,40 @@ export function getAllSlices(
 }
 
 /**
+ * Extract segments from all slices and layers of an FSD root.
+ *
+ * @returns A flat array of segments along with their name and location in the FSD root (layer, slice).
+ */
+export function getAllSegments(fsdRoot: Folder): Array<{
+  segment: Folder | File;
+  segmentName: string;
+  sliceName: string | null;
+  layerName: LayerName;
+}> {
+  return Object.entries(getLayers(fsdRoot)).flatMap(([layerName, layer]) => {
+    if (isSliced(layer)) {
+      return Object.entries(getSlices(layer)).flatMap(([sliceName, slice]) =>
+        Object.entries(getSegments(slice)).map(([segmentName, segment]) => ({
+          segment,
+          segmentName,
+          sliceName: sliceName as string | null,
+          layerName: layerName as LayerName,
+        })),
+      );
+    } else {
+      return Object.entries(getSegments(layer)).map(
+        ([segmentName, segment]) => ({
+          segment,
+          segmentName,
+          sliceName: null as string | null,
+          layerName: layerName as LayerName,
+        }),
+      );
+    }
+  });
+}
+
+/**
  * Determine if this layer is sliced.
  *
  * Only layers Shared and App are not sliced, the rest are.

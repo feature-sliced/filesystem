@@ -3,6 +3,7 @@ export {
   getSegments,
   getSlices,
   getAllSlices,
+  getAllSegments,
   isSliced,
   getIndex,
 } from "./fsd-aware-traverse.js";

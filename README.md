@@ -135,6 +135,19 @@ Extract slices from all layers of an FSD root. Returns a mapping of slice name (
 
 A folder is detected as a slice when it has at least one folder/file with a name of a conventional segment (`ui`, `api`, `model`, `lib`, `config`). If your project contains slices that don't have those segments, you can provide additional segment names.
 
+### `getAllSegments`
+
+```ts
+function getAllSegments(fsdRoot: Folder): Array<{
+  segment: Folder | File;
+  segmentName: string;
+  sliceName: string | null;
+  layerName: LayerName;
+}>;
+```
+
+Extract segments from all slices and layers of an FSD root. Returns a flat array of segments along with their name and location in the FSD root (layer, slice).
+
 ### `isSliced`
 
 ```ts
