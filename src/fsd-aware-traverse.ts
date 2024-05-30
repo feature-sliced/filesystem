@@ -1,6 +1,13 @@
 import { basename, join } from "node:path";
 
-import { conventionalSegmentNames, layerSequence, unslicedLayers, type File, type Folder, type LayerName } from "./definitions.js";
+import {
+  conventionalSegmentNames,
+  layerSequence,
+  unslicedLayers,
+  type File,
+  type Folder,
+  type LayerName,
+} from "./definitions.js";
 
 /**
  * Extract layers from an FSD root.
@@ -12,7 +19,8 @@ export function getLayers(fsdRoot: Folder): Partial<Record<LayerName, Folder>> {
     fsdRoot.children
       .filter(
         (child) =>
-          child.type === "folder" && layerSequence.includes(basename(child.path)),
+          child.type === "folder" &&
+          layerSequence.includes(basename(child.path)),
       )
       .map((child) => [basename(child.path) as LayerName, child]),
   );
