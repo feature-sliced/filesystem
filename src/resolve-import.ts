@@ -1,4 +1,5 @@
-import { resolveModuleName, sys, type CompilerOptions } from "typescript";
+import ts from "typescript";
+import type { CompilerOptions } from "typescript";
 
 /**
  * Given a file name, an imported path, and a TSConfig object, produce a path to the imported file, relative to TypeScript's `baseUrl`.
@@ -40,8 +41,8 @@ export function resolveImport(
   directoryExists?: (path: string) => boolean,
 ): string | null {
   return (
-    resolveModuleName(importedPath, importerPath, tsCompilerOptions, {
-      ...sys,
+    ts.resolveModuleName(importedPath, importerPath, tsCompilerOptions, {
+      ...ts.sys,
       fileExists,
       directoryExists,
     }).resolvedModule?.resolvedFileName ?? null
