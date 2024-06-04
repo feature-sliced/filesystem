@@ -36,15 +36,65 @@ import type { CompilerOptions } from "typescript";
 export function resolveImport(
   importedPath: string,
   importerPath: string,
-  tsCompilerOptions: CompilerOptions,
+  tsCompilerOptions: ImperfectCompilerOptions,
   fileExists: (path: string) => boolean,
   directoryExists?: (path: string) => boolean,
 ): string | null {
+  console.log(normalizeCompilerOptions(tsCompilerOptions));
   return (
-    ts.resolveModuleName(importedPath, importerPath, tsCompilerOptions, {
-      ...ts.sys,
-      fileExists,
-      directoryExists,
-    }).resolvedModule?.resolvedFileName ?? null
+    ts.resolveModuleName(
+      importedPath,
+      importerPath,
+      normalizeCompilerOptions(tsCompilerOptions),
+      {
+        ...ts.sys,
+        fileExists,
+        directoryExists,
+      },
+    ).resolvedModule?.resolvedFileName ?? null
   );
+}
+
+const imperfectKeys = {
+  module: ts.ModuleKind,
+  moduleResolution: ts.ModuleResolutionKind,
+  moduleDetection: ts.ModuleDetectionKind,
+  newLine: ts.NewLineKind,
+  target: ts.ScriptTarget,
+};
+
+/** TypeScript has a few fields which have values from an internal enum, and refuses to take the literal values from the tsconfig.json. */
+function normalizeCompilerOptions(
+  compilerOptions: ImperfectCompilerOptions,
+): CompilerOptions {
+  return Object.fromEntries(
+    Object.entries(compilerOptions).map(([key, value]) => {
+      if (
+        Object.keys(imperfectKeys).includes(key) &&
+        typeof value === "string"
+      ) {
+        for (const [enumKey, enumValue] of Object.entries(
+          imperfectKeys[key as keyof typeof imperfectKeys],
+        )) {
+          if (enumKey.toLowerCase() === value.toLowerCase()) {
+            return [key, enumValue];
+          }
+        }
+      }
+      return [key, value];
+    }),
+  ) as CompilerOptions;
+}
+
+export interface ImperfectCompilerOptions
+  extends Omit<CompilerOptions, keyof typeof imperfectKeys> {
+  module?: ts.ModuleKind | keyof typeof ts.ModuleKind;
+  moduleResolution?:
+    | ts.ModuleResolutionKind
+    | keyof typeof ts.ModuleResolutionKind;
+  moduleDetection?:
+    | ts.ModuleDetectionKind
+    | keyof typeof ts.ModuleDetectionKind;
+  newLine?: ts.NewLineKind | keyof typeof ts.NewLineKind;
+  target?: ts.ScriptTarget | keyof typeof ts.ScriptTarget;
 }
