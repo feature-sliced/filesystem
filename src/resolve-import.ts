@@ -40,7 +40,6 @@ export function resolveImport(
   fileExists: (path: string) => boolean,
   directoryExists?: (path: string) => boolean,
 ): string | null {
-  console.log(normalizeCompilerOptions(tsCompilerOptions));
   return (
     ts.resolveModuleName(
       importedPath,
