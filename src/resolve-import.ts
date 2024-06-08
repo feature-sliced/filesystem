@@ -56,7 +56,10 @@ export function resolveImport(
 
 const imperfectKeys = {
   module: ts.ModuleKind,
-  moduleResolution: ts.ModuleResolutionKind,
+  moduleResolution: {
+    ...ts.ModuleResolutionKind,
+    node: ts.ModuleResolutionKind.Node10,
+  },
   moduleDetection: ts.ModuleDetectionKind,
   newLine: ts.NewLineKind,
   target: ts.ScriptTarget,
@@ -90,7 +93,8 @@ export interface ImperfectCompilerOptions
   module?: ts.ModuleKind | keyof typeof ts.ModuleKind;
   moduleResolution?:
     | ts.ModuleResolutionKind
-    | keyof typeof ts.ModuleResolutionKind;
+    | keyof typeof ts.ModuleResolutionKind
+    | "node";
   moduleDetection?:
     | ts.ModuleDetectionKind
     | keyof typeof ts.ModuleDetectionKind;

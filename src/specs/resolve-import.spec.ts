@@ -23,3 +23,26 @@ test("Basic", () => {
     ),
   ).toBe("src/shared/ui/index.ts");
 });
+
+test("With deprecated moduleResolution: node", () => {
+  const tsCompilerOptions = {
+    moduleResolution: "node" as const,
+    baseUrl: ".",
+    paths: {
+      "~/*": ["./src/*"],
+    },
+  };
+
+  function fileExists(path: string) {
+    return path === "src/shared/ui/index.ts";
+  }
+
+  expect(
+    resolveImport(
+      "~/shared/ui",
+      "src/pages/home/ui/HomePage.tsx",
+      tsCompilerOptions,
+      fileExists,
+    ),
+  ).toBe("src/shared/ui/index.ts");
+});
