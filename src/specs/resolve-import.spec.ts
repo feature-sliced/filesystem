@@ -55,7 +55,6 @@ test("Alias to absolute paths (for whatever reason)", () => {
   };
 
   function fileExists(path: string) {
-    console.log(path);
     return path === "/src/shared/ui/Button.ts";
   }
 
