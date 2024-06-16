@@ -69,35 +69,35 @@ if (import.meta.vitest) {
       children: [
         {
           type: "folder",
-          path: joinFromRoot('entities'),
+          path: joinFromRoot("entities"),
           children: [
             {
               type: "folder",
-              path: joinFromRoot('entities', 'users'),
+              path: joinFromRoot("entities", "users"),
               children: [
                 {
                   type: "folder",
-                  path: joinFromRoot('entities', 'users', 'ui'),
+                  path: joinFromRoot("entities", "users", "ui"),
                   children: [],
                 },
                 {
                   type: "file",
-                  path: joinFromRoot('entities', 'users', 'index.ts'),
+                  path: joinFromRoot("entities", "users", "index.ts"),
                 },
               ],
             },
             {
               type: "folder",
-              path: joinFromRoot('entities', 'posts'),
+              path: joinFromRoot("entities", "posts"),
               children: [
                 {
                   type: "folder",
-                  path: joinFromRoot('entities', 'posts', 'ui'),
+                  path: joinFromRoot("entities", "posts", "ui"),
                   children: [],
                 },
                 {
                   type: "file",
-                  path: joinFromRoot('entities', 'posts', 'index.ts'),
+                  path: joinFromRoot("entities", "posts", "index.ts"),
                 },
               ],
             },
@@ -105,19 +105,19 @@ if (import.meta.vitest) {
         },
         {
           type: "folder",
-          path: joinFromRoot('shared'),
+          path: joinFromRoot("shared"),
           children: [
             {
               type: "folder",
-              path: joinFromRoot('shared', 'ui'),
+              path: joinFromRoot("shared", "ui"),
               children: [
                 {
                   type: "file",
-                  path: joinFromRoot('shared', 'ui', 'index.ts'),
+                  path: joinFromRoot("shared", "ui", "index.ts"),
                 },
                 {
                   type: "file",
-                  path: joinFromRoot('shared', 'ui', 'Button.tsx'),
+                  path: joinFromRoot("shared", "ui", "Button.tsx"),
                 },
               ],
             },
