@@ -2,6 +2,7 @@ import { test, expect } from "vitest";
 
 import { getAllSlices, getSlices, type Folder } from "../index.js";
 import { parseIntoFolder } from "./prepare-test.js";
+import { join } from "node:path";
 
 test("getSlices", () => {
   const rootFolder = parseIntoFolder(`
@@ -37,10 +38,10 @@ test("getSlices", () => {
   });
   expect(getSlices(rootFolder.children[2] as Folder)).toEqual({
     editor: (rootFolder.children[2] as Folder).children[0],
-    "settings/notifications": (
+    [join("settings", "notifications")]: (
       (rootFolder.children[2] as Folder).children[1] as Folder
     ).children[0],
-    "settings/profile": (
+    [join("settings", "profile")]: (
       (rootFolder.children[2] as Folder).children[1] as Folder
     ).children[1],
   });

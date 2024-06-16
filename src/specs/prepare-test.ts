@@ -38,7 +38,11 @@ export function parseIntoFolder(fsMarkup: string): Folder {
     .map((line, _i, lines) => line.slice(lines[0].search(/\S/)))
     .filter(Boolean);
 
-  return parseFolder(lines, "/");
+  return parseFolder(lines, joinFromRoot());
+}
+
+export function joinFromRoot(...segments: Array<string>) {
+  return join("/", ...segments);
 }
 
 if (import.meta.vitest) {
@@ -61,39 +65,39 @@ if (import.meta.vitest) {
 
     expect(root).toEqual({
       type: "folder",
-      path: "/",
+      path: joinFromRoot(),
       children: [
         {
           type: "folder",
-          path: "/entities",
+          path: joinFromRoot('entities'),
           children: [
             {
               type: "folder",
-              path: "/entities/users",
+              path: joinFromRoot('entities', 'users'),
               children: [
                 {
                   type: "folder",
-                  path: "/entities/users/ui",
+                  path: joinFromRoot('entities', 'users', 'ui'),
                   children: [],
                 },
                 {
                   type: "file",
-                  path: "/entities/users/index.ts",
+                  path: joinFromRoot('entities', 'users', 'index.ts'),
                 },
               ],
             },
             {
               type: "folder",
-              path: "/entities/posts",
+              path: joinFromRoot('entities', 'posts'),
               children: [
                 {
                   type: "folder",
-                  path: "/entities/posts/ui",
+                  path: joinFromRoot('entities', 'posts', 'ui'),
                   children: [],
                 },
                 {
                   type: "file",
-                  path: "/entities/posts/index.ts",
+                  path: joinFromRoot('entities', 'posts', 'index.ts'),
                 },
               ],
             },
@@ -101,19 +105,19 @@ if (import.meta.vitest) {
         },
         {
           type: "folder",
-          path: "/shared",
+          path: joinFromRoot('shared'),
           children: [
             {
               type: "folder",
-              path: "/shared/ui",
+              path: joinFromRoot('shared', 'ui'),
               children: [
                 {
                   type: "file",
-                  path: "/shared/ui/index.ts",
+                  path: joinFromRoot('shared', 'ui', 'index.ts'),
                 },
                 {
                   type: "file",
-                  path: "/shared/ui/Button.tsx",
+                  path: joinFromRoot('shared', 'ui', 'Button.tsx'),
                 },
               ],
             },
