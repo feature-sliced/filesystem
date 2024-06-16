@@ -46,3 +46,25 @@ test("With deprecated moduleResolution: node", () => {
     ),
   ).toBe("src/shared/ui/index.ts");
 });
+
+test("Alias to absolute paths (for whatever reason)", () => {
+  const tsCompilerOptions = {
+    paths: {
+      "@/*": ["/src/*"],
+    },
+  };
+
+  function fileExists(path: string) {
+    console.log(path);
+    return path === "/src/shared/ui/Button.ts";
+  }
+
+  expect(
+    resolveImport(
+      "@/shared/ui/Button",
+      "src/pages/home/ui/HomePage.tsx",
+      tsCompilerOptions,
+      fileExists,
+    ),
+  ).toBe("/src/shared/ui/Button.ts");
+});
