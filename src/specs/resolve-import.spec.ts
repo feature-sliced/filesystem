@@ -1,5 +1,6 @@
 import { expect, test } from "vitest";
 import { resolveImport } from "../index.js";
+import { join } from "node:path";
 
 test("Basic", () => {
   const tsCompilerOptions = {
@@ -21,7 +22,7 @@ test("Basic", () => {
       tsCompilerOptions,
       fileExists,
     ),
-  ).toBe("src/shared/ui/index.ts");
+  ).toBe(join("src", "shared", "ui", "index.ts"));
 });
 
 test("With deprecated moduleResolution: node", () => {
@@ -44,7 +45,7 @@ test("With deprecated moduleResolution: node", () => {
       tsCompilerOptions,
       fileExists,
     ),
-  ).toBe("src/shared/ui/index.ts");
+  ).toBe(join("src", "shared", "ui", "index.ts"));
 });
 
 test("Alias to absolute paths (for whatever reason)", () => {
@@ -65,5 +66,5 @@ test("Alias to absolute paths (for whatever reason)", () => {
       tsCompilerOptions,
       fileExists,
     ),
-  ).toBe("/src/shared/ui/Button.ts");
+  ).toBe(join("/", "src", "shared", "ui", "Button.ts"));
 });

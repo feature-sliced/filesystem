@@ -1,8 +1,11 @@
+import { sep } from "node:path";
 import ts from "typescript";
 import type { CompilerOptions } from "typescript";
 
 /**
  * Given a file name, an imported path, and a TSConfig object, produce a path to the imported file, relative to TypeScript's `baseUrl`.
+ *
+ * The resulting path uses OS-appropriate path separators.
  *
  * @example
  * ```tsx
@@ -41,16 +44,18 @@ export function resolveImport(
   directoryExists?: (path: string) => boolean,
 ): string | null {
   return (
-    ts.resolveModuleName(
-      importedPath,
-      importerPath,
-      normalizeCompilerOptions(tsCompilerOptions),
-      {
-        ...ts.sys,
-        fileExists,
-        directoryExists,
-      },
-    ).resolvedModule?.resolvedFileName ?? null
+    ts
+      .resolveModuleName(
+        importedPath,
+        importerPath,
+        normalizeCompilerOptions(tsCompilerOptions),
+        {
+          ...ts.sys,
+          fileExists,
+          directoryExists,
+        },
+      )
+      .resolvedModule?.resolvedFileName?.replaceAll("/", sep) ?? null
   );
 }
 
