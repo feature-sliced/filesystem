@@ -7,11 +7,11 @@ import {
   getSlices,
   isSlice,
   isSliced,
+  isCrossImportPublicApi,
   type Folder,
   type File,
 } from "../index.js";
 import { joinFromRoot, parseIntoFolder } from "./prepare-test.js";
-import { isCrossImportPublicApi } from "../fsd-aware-traverse.js";
 
 test("getSlices", () => {
   const rootFolder = parseIntoFolder(`
