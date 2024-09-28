@@ -2,7 +2,10 @@ import { join } from "node:path";
 import type { Folder, File } from "../definitions.js";
 
 /** Parse a multi-line indented string with emojis for files and folders into an FSD root. */
-export function parseIntoFolder(fsMarkup: string): Folder {
+export function parseIntoFolder(
+  fsMarkup: string,
+  basePath = joinFromRoot(),
+): Folder {
   function parseFolder(lines: Array<string>, path: string): Folder {
     const children: Array<Folder | File> = [];
 
@@ -38,7 +41,7 @@ export function parseIntoFolder(fsMarkup: string): Folder {
     .map((line, _i, lines) => line.slice(lines[0].search(/\S/)))
     .filter(Boolean);
 
-  return parseFolder(lines, joinFromRoot());
+  return parseFolder(lines, basePath);
 }
 
 export function joinFromRoot(...segments: Array<string>) {

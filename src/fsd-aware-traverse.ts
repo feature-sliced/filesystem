@@ -1,4 +1,4 @@
-import { basename, join } from "node:path";
+import { basename, join, parse } from "node:path";
 
 import {
   conventionalSegmentNames,
@@ -71,12 +71,8 @@ export function getSegments(
 ): Record<string, Folder | File> {
   return Object.fromEntries(
     sliceOrUnslicedLayer.children
-      .filter(
-        (child) =>
-          child.type !== "file" ||
-          withoutExtension(basename(child.path)) !== "index",
-      )
-      .map((child) => [withoutExtension(basename(child.path)), child]),
+      .filter((child) => !isIndex(child))
+      .map((child) => [parse(child.path).name, child]),
   );
 }
 
@@ -163,12 +159,34 @@ export function getIndex(fileOrFolder: File | Folder): File | undefined {
   if (fileOrFolder.type === "file") {
     return fileOrFolder;
   } else {
-    return fileOrFolder.children.find(
-      (child) =>
-        child.type === "file" &&
-        withoutExtension(basename(child.path)) === "index",
-    ) as File | undefined;
+    return fileOrFolder.children.find(isIndex) as File | undefined;
   }
+}
+
+/** Check if a given file or folder is an index file. */
+export function isIndex(fileOrFolder: File | Folder): boolean {
+  return (
+    fileOrFolder.type === "file" && parse(fileOrFolder.path).name === "index"
+  );
+}
+
+/**
+ * Check if a given file is a cross-import public API defined in the slice `inSlice` for the slice `forSlice` on a given layer.
+ *
+ * @example
+ * const file = { path: "./src/entities/user/@x/product.ts", type: "file" }
+ * isCrossImportPublicApi(file, { inSlice: "user", forSlice: "product", layerPath: "./src/entities" }) // true
+ */
+export function isCrossImportPublicApi(
+  file: File,
+  {
+    inSlice,
+    forSlice,
+    layerPath,
+  }: { inSlice: string; forSlice: string; layerPath: string },
+): boolean {
+  const { dir, name } = parse(file.path);
+  return name === forSlice && dir === join(layerPath, inSlice, "@x");
 }
 
 /**
@@ -184,19 +202,6 @@ export function isSlice(
   return folder.children.some((child) =>
     conventionalSegmentNames
       .concat(additionalSegmentNames)
-      .includes(withoutExtension(basename(child.path))),
+      .includes(parse(child.path).name),
   );
-}
-
-/**
- * Cut away one layer of extension from a filename.
- *
- * @example
- * withoutExtension("index.tsx") // "index"
- * withoutExtension("index.spec.tsx") // "index.spec"
- * withoutExtension("index") // "index"
- */
-function withoutExtension(filename: string) {
-  const lastDotIndex = filename.lastIndexOf(".");
-  return lastDotIndex === -1 ? filename : filename.slice(0, lastDotIndex);
 }

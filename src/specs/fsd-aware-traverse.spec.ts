@@ -1,8 +1,17 @@
+import { join } from "node:path";
 import { test, expect } from "vitest";
 
-import { getAllSlices, getSlices, type Folder } from "../index.js";
-import { parseIntoFolder } from "./prepare-test.js";
-import { join } from "node:path";
+import {
+  getAllSlices,
+  getIndex,
+  getSlices,
+  isSlice,
+  isSliced,
+  type Folder,
+  type File,
+} from "../index.js";
+import { joinFromRoot, parseIntoFolder } from "./prepare-test.js";
+import { isCrossImportPublicApi } from "../fsd-aware-traverse.js";
 
 test("getSlices", () => {
   const rootFolder = parseIntoFolder(`
@@ -88,4 +97,105 @@ test("getAllSlices", () => {
     ...(rootFolder.children[3] as Folder).children[0],
     layerName: "pages",
   });
+});
+
+test("isSliced", () => {
+  expect(isSliced("shared")).toBe(false);
+  expect(isSliced("app")).toBe(false);
+  expect(isSliced("entities")).toBe(true);
+  expect(isSliced("features")).toBe(true);
+  expect(isSliced("pages")).toBe(true);
+  expect(isSliced("widgets")).toBe(true);
+
+  expect(
+    isSliced({
+      type: "folder",
+      path: joinFromRoot("project", "src", "shared"),
+      children: [],
+    }),
+  ).toBe(false);
+  expect(
+    isSliced({
+      type: "folder",
+      path: joinFromRoot("project", "src", "entities"),
+      children: [],
+    }),
+  ).toBe(true);
+});
+
+test("getIndex", () => {
+  const indexFile: File = {
+    type: "file",
+    path: joinFromRoot("project", "src", "shared", "index.ts"),
+  };
+  const fileSegment: File = {
+    type: "file",
+    path: joinFromRoot("project", "src", "entities", "user", "ui.ts"),
+  };
+  const folderSegment = parseIntoFolder(
+    `
+    📄 Avatar.tsx
+    📄 User.tsx
+    📄 index.ts
+    `,
+    joinFromRoot("project", "src", "entities", "user", "ui"),
+  );
+  expect(getIndex(indexFile)).toEqual(indexFile);
+  expect(getIndex(fileSegment)).toEqual(fileSegment);
+  expect(getIndex(folderSegment)).toEqual({
+    type: "file",
+    path: joinFromRoot("project", "src", "entities", "user", "ui", "index.ts"),
+  });
+});
+
+test("isCrossImportPublicApi", () => {
+  const file: File = {
+    path: joinFromRoot(
+      "project",
+      "src",
+      "entities",
+      "user",
+      "@x",
+      "product.ts",
+    ),
+    type: "file",
+  };
+
+  expect(
+    isCrossImportPublicApi(file, {
+      inSlice: "user",
+      forSlice: "product",
+      layerPath: joinFromRoot("project", "src", "entities"),
+    }),
+  ).toBe(true);
+  expect(
+    isCrossImportPublicApi(file, {
+      inSlice: "product",
+      forSlice: "user",
+      layerPath: joinFromRoot("project", "src", "entities"),
+    }),
+  ).toBe(false);
+});
+
+test("isSlice", () => {
+  const sliceFolder = parseIntoFolder(
+    `
+    📂 ui
+      📄 Avatar.tsx
+      📄 User.tsx
+    📄 index.ts
+    `,
+    joinFromRoot("project", "src", "entities", "user"),
+  );
+  expect(isSlice(sliceFolder)).toBe(true);
+
+  const notSliceFolder = parseIntoFolder(
+    `
+    📂 shared
+    📂 pages
+    📂 app
+    `,
+    joinFromRoot("project", "src"),
+  );
+  expect(isSlice(notSliceFolder)).toBe(false);
 });
