@@ -195,7 +195,7 @@ Get the index (public API) of a slice or segment. When a segment is a file, it i
 #### `isIndex`
 
 ```ts
-export function isIndex(fileOrFolder: File | Folder): boolean;
+function isIndex(fileOrFolder: File | Folder): boolean;
 ```
 
 Determine if a given file or folder is an index file (only files can be indexes, folders are accepted for convenience, but always return false).
@@ -219,7 +219,7 @@ Slices are defined as folders that contain at least one segment. Additional segm
 #### `isCrossImportPublicApi`
 
 ```ts
-export function isCrossImportPublicApi(
+function isCrossImportPublicApi(
   file: File,
   {
     inSlice,
