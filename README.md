@@ -192,6 +192,14 @@ function getIndex(fileOrFolder: File | Folder): File | undefined;
 
 Get the index (public API) of a slice or segment. When a segment is a file, it is its own index.
 
+#### `isIndex`
+
+```ts
+export function isIndex(fileOrFolder: File | Folder): boolean;
+```
+
+Determine if a given file or folder is an index file (only files can be indexes, folders are accepted for convenience, but always return false).
+
 #### `isSlice`
 
 > [!NOTE]  
@@ -207,5 +215,31 @@ function isSlice(
 Determine if this folder is a slice.
 
 Slices are defined as folders that contain at least one segment. Additional segment names can be provided if some slice in project contains only unconventional segments.
+
+#### `isCrossImportPublicApi`
+
+```ts
+export function isCrossImportPublicApi(
+  file: File,
+  {
+    inSlice,
+    forSlice,
+    layerPath,
+  }: { inSlice: string; forSlice: string; layerPath: string },
+): boolean;
+```
+
+Check if a given file is a cross-import public API defined in the slice `inSlice` for the slice `forSlice` on a given layer.
+
+For example:
+
+```ts
+const file = { path: "./src/entities/user/@x/product.ts", type: "file" };
+isCrossImportPublicApi(file, {
+  inSlice: "user",
+  forSlice: "product",
+  layerPath: "./src/entities",
+}); // true
+```
 
 [feature-sliced-design]: https://feature-sliced.design

@@ -163,7 +163,7 @@ export function getIndex(fileOrFolder: File | Folder): File | undefined {
   }
 }
 
-/** Check if a given file or folder is an index file. */
+/** Determine if a given file or folder is an index file. */
 export function isIndex(fileOrFolder: File | Folder): boolean {
   return (
     fileOrFolder.type === "file" && parse(fileOrFolder.path).name === "index"
