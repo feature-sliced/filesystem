@@ -34,3 +34,4 @@ export const layerSequence: Array<LayerName> = [
 ];
 export const unslicedLayers = ["shared", "app"];
 export const conventionalSegmentNames = ["ui", "api", "lib", "model", "config"];
+export const crossReferenceToken = "@x";

@@ -16,4 +16,5 @@ export {
   layerSequence,
   unslicedLayers,
   conventionalSegmentNames,
+  crossReferenceToken,
 } from "./definitions.js";
