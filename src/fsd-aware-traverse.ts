@@ -165,6 +165,15 @@ export function getIndex(fileOrFolder: File | Folder): File | undefined {
 
 /** Determine if a given file or folder is an index file. */
 export function isIndex(fileOrFolder: File | Folder): boolean {
+  if (fileOrFolder.type === "file") {
+    const Seperator = ".";
+    const parsedFileName = parse(fileOrFolder.path).name;
+
+    return parsedFileName.split(Seperator).at(0) === "index";
+  }
+
+  return false;
+
   return (
     fileOrFolder.type === "file" && parse(fileOrFolder.path).name === "index"
   );
