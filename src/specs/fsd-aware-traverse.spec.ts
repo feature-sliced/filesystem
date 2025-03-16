@@ -141,19 +141,21 @@ describe("getIndex", () => {
       `,
       joinFromRoot("project", "src", "entities", "user", "ui"),
     );
-    expect(getIndex(indexFile)).toEqual(indexFile);
-    expect(getIndex(fileSegment)).toEqual(fileSegment);
-    expect(getIndex(folderSegment)).toEqual({
-      type: "file",
-      path: joinFromRoot(
-        "project",
-        "src",
-        "entities",
-        "user",
-        "ui",
-        "index.ts",
-      ),
-    });
+    expect(getIndex(indexFile)).toEqual([indexFile]);
+    expect(getIndex(fileSegment)).toEqual([fileSegment]);
+    expect(getIndex(folderSegment)).toEqual([
+      {
+        type: "file",
+        path: joinFromRoot(
+          "project",
+          "src",
+          "entities",
+          "user",
+          "ui",
+          "index.ts",
+        ),
+      },
+    ]);
   });
 
   test("recognizes index.server.js as index file", () => {
@@ -174,19 +176,58 @@ describe("getIndex", () => {
       joinFromRoot("project", "src", "entities", "user", "ui"),
     );
 
-    expect(getIndex(indexServerFile)).toEqual(indexServerFile);
-    expect(getIndex(nonIndexFile)).toEqual(nonIndexFile);
-    expect(getIndex(folderSegment)).toEqual({
-      type: "file",
-      path: joinFromRoot(
-        "project",
-        "src",
-        "entities",
-        "user",
-        "ui",
-        "index.server.js",
-      ),
-    });
+    expect(getIndex(indexServerFile)).toEqual([indexServerFile]);
+    expect(getIndex(nonIndexFile)).toEqual([nonIndexFile]);
+    expect(getIndex(folderSegment)).toEqual([
+      {
+        type: "file",
+        path: joinFromRoot(
+          "project",
+          "src",
+          "entities",
+          "user",
+          "ui",
+          "index.server.js",
+        ),
+      },
+    ]);
+  });
+
+  test("handles multiple index files", () => {
+    const folderSegment = parseIntoFolder(
+      `
+      📄 Avatar.tsx
+      📄 User.tsx
+      📄 index.client.js
+      📄 index.server.js
+      `,
+      joinFromRoot("project", "src", "entities", "user", "ui"),
+    );
+
+    expect(getIndex(folderSegment)).toEqual([
+      {
+        type: "file",
+        path: joinFromRoot(
+          "project",
+          "src",
+          "entities",
+          "user",
+          "ui",
+          "index.client.js",
+        ),
+      },
+      {
+        type: "file",
+        path: joinFromRoot(
+          "project",
+          "src",
+          "entities",
+          "user",
+          "ui",
+          "index.server.js",
+        ),
+      },
+    ]);
   });
 });
 

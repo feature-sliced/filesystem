@@ -187,10 +187,10 @@ Determine if this layer is sliced. You can pass the folder of a layer or the nam
 #### `getIndex`
 
 ```ts
-function getIndex(fileOrFolder: File | Folder): File | undefined;
+function getIndex(fileOrFolder: File | Folder): File[];
 ```
 
-Get the index (public API) of a slice or segment. When a segment is a file, it is its own index.
+Get the index (public API) of a slice or segment. When a segment is a file, it is its own index. When a segment is a folder, it returns an array of index files within that folder. Multiple index files (e.g., `index.client.js`, `index.server.js`) are supported.
 
 #### `isIndex`
 
