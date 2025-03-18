@@ -162,7 +162,7 @@ export function getIndexes(fileOrFolder: File | Folder): File[] {
     return [fileOrFolder];
   }
 
-  return fileOrFolder.children.filter(isIndex);
+  return fileOrFolder.children.filter(isIndex) as File[];
 }
 
 /** Determine if a given file or folder is an index file. */
