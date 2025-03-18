@@ -157,7 +157,7 @@ export function isSliced(layerOrName: Folder | LayerName): boolean {
  * When a segment is a folder, it returns an array of index files within that folder.
  * Multiple index files (e.g., `index.client.js`, `index.server.js`) are supported.
  */
-export function getIndex(fileOrFolder: File | Folder): File[] {
+export function getIndexes(fileOrFolder: File | Folder): File[] {
   if (fileOrFolder.type === "file") {
     return [fileOrFolder];
   }

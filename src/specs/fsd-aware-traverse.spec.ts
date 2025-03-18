@@ -3,7 +3,7 @@ import { test, expect, describe } from "vitest";
 
 import {
   getAllSlices,
-  getIndex,
+  getIndexes,
   getSlices,
   isSlice,
   isSliced,
@@ -123,7 +123,7 @@ test("isSliced", () => {
   ).toBe(true);
 });
 
-describe("getIndex", () => {
+describe("getIndexes", () => {
   test("basic functionality", () => {
     const indexFile: File = {
       type: "file",
@@ -141,9 +141,9 @@ describe("getIndex", () => {
       `,
       joinFromRoot("project", "src", "entities", "user", "ui"),
     );
-    expect(getIndex(indexFile)).toEqual([indexFile]);
-    expect(getIndex(fileSegment)).toEqual([fileSegment]);
-    expect(getIndex(folderSegment)).toEqual([
+    expect(getIndexes(indexFile)).toEqual([indexFile]);
+    expect(getIndexes(fileSegment)).toEqual([fileSegment]);
+    expect(getIndexes(folderSegment)).toEqual([
       {
         type: "file",
         path: joinFromRoot(
@@ -176,9 +176,9 @@ describe("getIndex", () => {
       joinFromRoot("project", "src", "entities", "user", "ui"),
     );
 
-    expect(getIndex(indexServerFile)).toEqual([indexServerFile]);
-    expect(getIndex(nonIndexFile)).toEqual([nonIndexFile]);
-    expect(getIndex(folderSegment)).toEqual([
+    expect(getIndexes(indexServerFile)).toEqual([indexServerFile]);
+    expect(getIndexes(nonIndexFile)).toEqual([nonIndexFile]);
+    expect(getIndexes(folderSegment)).toEqual([
       {
         type: "file",
         path: joinFromRoot(
@@ -204,7 +204,7 @@ describe("getIndex", () => {
       joinFromRoot("project", "src", "entities", "user", "ui"),
     );
 
-    expect(getIndex(folderSegment)).toEqual([
+    expect(getIndexes(folderSegment)).toEqual([
       {
         type: "file",
         path: joinFromRoot(

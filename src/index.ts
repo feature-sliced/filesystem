@@ -5,7 +5,7 @@ export {
   getAllSlices,
   getAllSegments,
   isSliced,
-  getIndex,
+  getIndexes,
   isSlice,
   isIndex,
   isCrossImportPublicApi,
