@@ -10,8 +10,9 @@ runs:
   using: composite
   steps:
     - name: Setup corepack
+      # --force to overwrite existing yarn binary on Windows (we don't need it anyway)
       run: |
-        npm install -g corepack@latest
+        npm install -g corepack@latest --force
         corepack enable
       shell: bash
 
