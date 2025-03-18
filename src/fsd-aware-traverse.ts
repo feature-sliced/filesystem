@@ -154,20 +154,27 @@ export function isSliced(layerOrName: Folder | LayerName): boolean {
  * Get the index (public API) of a slice or segment.
  *
  * When a segment is a file, it is its own index.
+ * When a segment is a folder, it returns an array of index files within that folder.
+ * Multiple index files (e.g., `index.client.js`, `index.server.js`) are supported.
  */
-export function getIndex(fileOrFolder: File | Folder): File | undefined {
+export function getIndexes(fileOrFolder: File | Folder): File[] {
   if (fileOrFolder.type === "file") {
-    return fileOrFolder;
-  } else {
-    return fileOrFolder.children.find(isIndex) as File | undefined;
+    return [fileOrFolder];
   }
+
+  return fileOrFolder.children.filter(isIndex);
 }
 
 /** Determine if a given file or folder is an index file. */
 export function isIndex(fileOrFolder: File | Folder): boolean {
-  return (
-    fileOrFolder.type === "file" && parse(fileOrFolder.path).name === "index"
-  );
+  if (fileOrFolder.type === "file") {
+    const separator = ".";
+    const parsedFileName = parse(fileOrFolder.path).name;
+
+    return parsedFileName.split(separator).at(0) === "index";
+  }
+
+  return false;
 }
 
 /**

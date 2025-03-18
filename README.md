@@ -184,13 +184,13 @@ function isSliced(layerOrName: Folder | LayerName): boolean;
 
 Determine if this layer is sliced. You can pass the folder of a layer or the name (lowercase). Only layers Shared and App are not sliced, the rest are.
 
-#### `getIndex`
+#### `getIndexes`
 
 ```ts
-function getIndex(fileOrFolder: File | Folder): File | undefined;
+function getIndexes(fileOrFolder: File | Folder): File[];
 ```
 
-Get the index (public API) of a slice or segment. When a segment is a file, it is its own index.
+Get the index (public API) of a slice or segment. When a segment is a file, it is its own index. When a segment is a folder, it returns an array of index files within that folder. Multiple index files (e.g., `index.client.js`, `index.server.js`) are supported.
 
 #### `isIndex`
 

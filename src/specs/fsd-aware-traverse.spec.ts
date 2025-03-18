@@ -1,9 +1,9 @@
 import { join } from "node:path";
-import { test, expect } from "vitest";
+import { test, expect, describe } from "vitest";
 
 import {
   getAllSlices,
-  getIndex,
+  getIndexes,
   getSlices,
   isSlice,
   isSliced,
@@ -123,28 +123,111 @@ test("isSliced", () => {
   ).toBe(true);
 });
 
-test("getIndex", () => {
-  const indexFile: File = {
-    type: "file",
-    path: joinFromRoot("project", "src", "shared", "index.ts"),
-  };
-  const fileSegment: File = {
-    type: "file",
-    path: joinFromRoot("project", "src", "entities", "user", "ui.ts"),
-  };
-  const folderSegment = parseIntoFolder(
-    `
-    📄 Avatar.tsx
-    📄 User.tsx
-    📄 index.ts
-    `,
-    joinFromRoot("project", "src", "entities", "user", "ui"),
-  );
-  expect(getIndex(indexFile)).toEqual(indexFile);
-  expect(getIndex(fileSegment)).toEqual(fileSegment);
-  expect(getIndex(folderSegment)).toEqual({
-    type: "file",
-    path: joinFromRoot("project", "src", "entities", "user", "ui", "index.ts"),
+describe("getIndexes", () => {
+  test("basic functionality", () => {
+    const indexFile: File = {
+      type: "file",
+      path: joinFromRoot("project", "src", "shared", "index.ts"),
+    };
+    const fileSegment: File = {
+      type: "file",
+      path: joinFromRoot("project", "src", "entities", "user", "ui.ts"),
+    };
+    const folderSegment = parseIntoFolder(
+      `
+      📄 Avatar.tsx
+      📄 User.tsx
+      📄 index.ts
+      `,
+      joinFromRoot("project", "src", "entities", "user", "ui"),
+    );
+    expect(getIndexes(indexFile)).toEqual([indexFile]);
+    expect(getIndexes(fileSegment)).toEqual([fileSegment]);
+    expect(getIndexes(folderSegment)).toEqual([
+      {
+        type: "file",
+        path: joinFromRoot(
+          "project",
+          "src",
+          "entities",
+          "user",
+          "ui",
+          "index.ts",
+        ),
+      },
+    ]);
+  });
+
+  test("recognizes index.server.js as index file", () => {
+    const indexServerFile: File = {
+      type: "file",
+      path: joinFromRoot("project", "src", "shared", "index.server.js"),
+    };
+    const nonIndexFile: File = {
+      type: "file",
+      path: joinFromRoot("project", "src", "entities", "user", "ui.ts"),
+    };
+    const folderSegment = parseIntoFolder(
+      `
+      📄 Avatar.tsx
+      📄 User.tsx
+      📄 index.server.js
+      `,
+      joinFromRoot("project", "src", "entities", "user", "ui"),
+    );
+
+    expect(getIndexes(indexServerFile)).toEqual([indexServerFile]);
+    expect(getIndexes(nonIndexFile)).toEqual([nonIndexFile]);
+    expect(getIndexes(folderSegment)).toEqual([
+      {
+        type: "file",
+        path: joinFromRoot(
+          "project",
+          "src",
+          "entities",
+          "user",
+          "ui",
+          "index.server.js",
+        ),
+      },
+    ]);
+  });
+
+  test("handles multiple index files", () => {
+    const folderSegment = parseIntoFolder(
+      `
+      📄 Avatar.tsx
+      📄 User.tsx
+      📄 index.client.js
+      📄 index.server.js
+      `,
+      joinFromRoot("project", "src", "entities", "user", "ui"),
+    );
+
+    expect(getIndexes(folderSegment)).toEqual([
+      {
+        type: "file",
+        path: joinFromRoot(
+          "project",
+          "src",
+          "entities",
+          "user",
+          "ui",
+          "index.client.js",
+        ),
+      },
+      {
+        type: "file",
+        path: joinFromRoot(
+          "project",
+          "src",
+          "entities",
+          "user",
+          "ui",
+          "index.server.js",
+        ),
+      },
+    ]);
   });
 });
 
