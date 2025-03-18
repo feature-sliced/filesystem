@@ -9,14 +9,16 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Setup corepack
+      run: |
+        npm install -g corepack@latest
+        corepack enable
+      shell: bash
+
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
         cache: "pnpm"
-
-    - name: Setup corepack
-      run: corepack enable
-      shell: bash
 
     - name: Checkout code
       uses: actions/checkout@v4
