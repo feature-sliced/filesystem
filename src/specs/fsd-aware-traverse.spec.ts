@@ -260,6 +260,36 @@ test("isCrossImportPublicApi", () => {
   ).toBe(false);
 });
 
+test("isCrossImportPublicApi with index files", () => {
+  const indexFile: File = {
+    path: joinFromRoot(
+      "project",
+      "src",
+      "entities",
+      "user",
+      "@x",
+      "product",
+      "index.ts",
+    ),
+    type: "file",
+  };
+
+  expect(
+    isCrossImportPublicApi(indexFile, {
+      inSlice: "user",
+      forSlice: "product",
+      layerPath: joinFromRoot("project", "src", "entities"),
+    }),
+  ).toBe(true);
+  expect(
+    isCrossImportPublicApi(indexFile, {
+      inSlice: "product",
+      forSlice: "user",
+      layerPath: joinFromRoot("project", "src", "entities"),
+    }),
+  ).toBe(false);
+});
+
 test("isSlice", () => {
   const sliceFolder = parseIntoFolder(
     `
