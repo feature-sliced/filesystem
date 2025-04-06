@@ -193,6 +193,11 @@ export function isCrossImportPublicApi(
   }: { inSlice: string; forSlice: string; layerPath: string },
 ): boolean {
   const { dir, name } = parse(file.path);
+
+  if (isIndex(file)) {
+    return dir === join(layerPath, inSlice, "@x", forSlice);
+  }
+
   return name === forSlice && dir === join(layerPath, inSlice, "@x");
 }
 
