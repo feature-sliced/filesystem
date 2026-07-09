@@ -40,6 +40,48 @@ describe("getLayers", () => {
       pages: root.children[1] as Folder,
     });
   });
+
+  test("accept custom aliases for canonical layers", () => {
+    const root = parseIntoFolder(`
+      📂 shared
+        📂 ui
+          📄 Button.tsx
+      📂 screens
+        📂 editor
+          📄 index.ts
+    `);
+    expect(getLayers(root, { layerAliases: { pages: "screens" } })).toEqual({
+      shared: root.children[0] as Folder,
+      pages: root.children[1] as Folder,
+    });
+  });
+
+  test("accept prefixed custom aliases", () => {
+    const root = parseIntoFolder(`
+      📂 screens
+        📄 home.tsx
+      📂 _screens
+        📂 home
+          📄 index.ts
+    `);
+    expect(getLayers(root, { layerAliases: { pages: "screens" } })).toEqual({
+      pages: root.children[1] as Folder,
+    });
+  });
+
+  test("prioritizes canonical layer over alias", () => {
+    const root = parseIntoFolder(`
+      📂 pages
+        📂 home
+          📄 index.ts
+      📂 screens
+        📂 dashboard
+          📄 index.ts
+    `);
+    expect(getLayers(root, { layerAliases: { pages: "screens" } })).toEqual({
+      pages: root.children[0] as Folder,
+    });
+  });
 });
 
 test("getSlices", () => {
@@ -128,6 +170,31 @@ test("getAllSlices", () => {
   });
 });
 
+test("getAllSlices with custom layer aliases", () => {
+  const rootFolder = parseIntoFolder(`
+    📂 entities
+      📂 user
+        📂 ui
+        📄 index.ts
+    📂 screens
+      📂 home
+        📂 ui
+        📄 index.ts
+  `);
+
+  const allSlices = getAllSlices(rootFolder, [], {
+    layerAliases: { pages: "screens" },
+  });
+  expect(Object.keys(allSlices).sort((a, b) => a.localeCompare(b))).toEqual([
+    "home",
+    "user",
+  ]);
+  expect(allSlices.home).toEqual({
+    ...(rootFolder.children[1] as Folder).children[0],
+    layerName: "screens",
+  });
+});
+
 test("isSliced", () => {
   expect(isSliced("shared")).toBe(false);
   expect(isSliced("app")).toBe(false);
@@ -135,6 +202,9 @@ test("isSliced", () => {
   expect(isSliced("features")).toBe(true);
   expect(isSliced("pages")).toBe(true);
   expect(isSliced("widgets")).toBe(true);
+  expect(isSliced("screens", { layerAliases: { pages: "screens" } })).toBe(
+    true,
+  );
 
   expect(
     isSliced({
@@ -149,6 +219,16 @@ test("isSliced", () => {
       path: joinFromRoot("project", "src", "entities"),
       children: [],
     }),
+  ).toBe(true);
+  expect(
+    isSliced(
+      {
+        type: "folder",
+        path: joinFromRoot("project", "src", "screens"),
+        children: [],
+      },
+      { layerAliases: { pages: "screens" } },
+    ),
   ).toBe(true);
 });
 

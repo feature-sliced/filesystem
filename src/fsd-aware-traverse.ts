@@ -6,6 +6,7 @@ import {
   unslicedLayers,
   type File,
   type Folder,
+  type LayerConvention,
   type LayerName,
 } from "./definitions.js";
 
@@ -30,12 +31,30 @@ function removePrefix(path: string): string {
   return path.replace(/^([0-9]_|_)/, "");
 }
 
+function resolveLayerName(
+  pathSegment: string,
+  convention?: LayerConvention,
+): LayerName | undefined {
+  const name = removePrefix(pathSegment);
+  const layer = layerSequence.find((candidate) => candidate === name);
+  if (layer) {
+    return layer;
+  }
+
+  return layerSequence.find((candidate) =>
+    convention?.layerAliases?.[candidate] === name,
+  );
+}
+
 /**
  * Extract layers from an FSD root.
  *
  * @returns A mapping of layer name to folder object.
  */
-export function getLayers(fsdRoot: Folder): Partial<Record<LayerName, Folder>> {
+export function getLayers(
+  fsdRoot: Folder,
+  convention?: LayerConvention,
+): Partial<Record<LayerName, Folder>> {
   return Object.fromEntries(
     fsdRoot.children.reduce(
       (acc, child) => {
@@ -44,8 +63,7 @@ export function getLayers(fsdRoot: Folder): Partial<Record<LayerName, Folder>> {
         }
 
         const name = basename(child.path);
-        const layer: LayerName | undefined =
-          layerSequence[layerSequence.indexOf(removePrefix(name))];
+        const layer = resolveLayerName(name, convention);
         if (layer) {
           const existingLayer = acc.find((el) => el[0] === layer);
           if (!existingLayer) {
@@ -126,9 +144,10 @@ export function getSegments(
 export function getAllSlices(
   fsdRoot: Folder,
   additionalSegmentNames: Array<string> = [],
+  convention?: LayerConvention,
 ): Record<string, Folder & { layerName: string }> {
-  return Object.values(getLayers(fsdRoot))
-    .filter(isSliced)
+  return Object.values(getLayers(fsdRoot, convention))
+    .filter((layer) => isSliced(layer, convention))
     .reduce((slices, layer) => {
       return {
         ...slices,
@@ -149,14 +168,17 @@ export function getAllSlices(
  *
  * @returns A flat array of segments along with their name and location in the FSD root (layer, slice).
  */
-export function getAllSegments(fsdRoot: Folder): Array<{
+export function getAllSegments(
+  fsdRoot: Folder,
+  convention?: LayerConvention,
+): Array<{
   segment: Folder | File;
   segmentName: string;
   sliceName: string | null;
   layerName: LayerName;
 }> {
-  return Object.entries(getLayers(fsdRoot)).flatMap(([layerName, layer]) => {
-    if (isSliced(layer)) {
+  return Object.entries(getLayers(fsdRoot, convention)).flatMap(([layerName, layer]) => {
+    if (isSliced(layer, convention)) {
       return Object.entries(getSlices(layer)).flatMap(([sliceName, slice]) =>
         Object.entries(getSegments(slice)).map(([segmentName, segment]) => ({
           segment,
@@ -183,10 +205,16 @@ export function getAllSegments(fsdRoot: Folder): Array<{
  *
  * Only layers Shared and App are not sliced, the rest are.
  */
-export function isSliced(layerOrName: Folder | LayerName): boolean {
-  return !unslicedLayers.includes(
+export function isSliced(
+  layerOrName: Folder | LayerName | string,
+  convention?: LayerConvention,
+): boolean {
+  const layerName = resolveLayerName(
     basename(typeof layerOrName === "string" ? layerOrName : layerOrName.path),
+    convention,
   );
+
+  return layerName !== undefined && !unslicedLayers.includes(layerName);
 }
 
 /**

@@ -24,6 +24,20 @@ export type LayerName =
   | "pages"
   | "app";
 
+export type LayerAliases = Partial<Record<LayerName, string>>;
+
+export interface LayerConvention {
+  /**
+   * Project-specific names for canonical FSD layers.
+   *
+   * @example
+   * ```ts
+   * { pages: "screens" }
+   * ```
+   */
+  layerAliases?: LayerAliases;
+}
+
 export const layerSequence: Array<LayerName> = [
   "shared",
   "entities",
