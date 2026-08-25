@@ -100,6 +100,8 @@ export interface Folder {
 }
 ```
 
+All traversal functions recognize prefixes on layer folders (an underscore or a digit followed by an underscore, e.g. `_app` or `6_shared`). Layer names are always reported without the prefix, while the returned `Folder` objects keep the physical, prefixed path.
+
 #### `getLayers`
 
 ```ts
@@ -114,7 +116,7 @@ export type LayerName =
 function getLayers(fsdRoot: Folder): Partial<Record<LayerName, Folder>>;
 ```
 
-Extract layers from an FSD root. Returns a mapping of layer name to folder object.
+Extract layers from an FSD root. Returns a mapping of layer name to folder object. Prefixed layers (e.g. `6_shared`, `_app`) are mapped to their canonical names (`shared`, `app`). When both a prefixed and a non-prefixed variant of the same layer exist, the prefixed one wins.
 
 #### `getSlices`
 
@@ -148,7 +150,7 @@ function getAllSlices(
 ): Record<string, Folder & { layerName: string }>;
 ```
 
-Extract slices from all layers of an FSD root. Returns a mapping of slice name (potentially containing slashes) to folder object, augmented with a `layerName` property.
+Extract slices from all layers of an FSD root. Returns a mapping of slice name (potentially containing slashes) to folder object, augmented with a `layerName` property. The `layerName` is the canonical (prefix-stripped) layer name.
 
 A folder is detected as a slice when it has at least one folder/file with a name of a conventional segment (`ui`, `api`, `model`, `lib`, `config`). If your project contains slices that don't have those segments, you can provide additional segment names.
 

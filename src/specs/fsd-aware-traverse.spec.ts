@@ -2,6 +2,7 @@ import { join } from "node:path";
 import { test, expect, describe } from "vitest";
 
 import {
+  getAllSegments,
   getAllSlices,
   getIndexes,
   getSlices,
@@ -128,6 +129,74 @@ test("getAllSlices", () => {
   });
 });
 
+test("getAllSlices with prefixed layers", () => {
+  const root = parseIntoFolder(`
+    📂 2_pages
+      📂 home
+        📂 ui
+          📄 index.ts
+        📄 index.ts
+    📂 _app
+      📂 lib
+        📄 index.ts
+  `);
+
+  const allSlices = getAllSlices(root);
+
+  expect(Object.keys(allSlices)).toEqual(["home"]);
+  expect(allSlices.home).toEqual({
+    ...((root.children[0] as Folder).children[0] as Folder),
+    layerName: "pages",
+  });
+});
+
+test("getAllSegments with a prefixed unsliced layer", () => {
+  const root = parseIntoFolder(`
+    📂 _app
+      📂 lib
+        📄 index.ts
+    📂 features
+      📂 search
+        📂 lib
+          📄 index.ts
+        📄 index.ts
+  `);
+
+  expect(getAllSegments(root)).toEqual([
+    {
+      segment: (root.children[0] as Folder).children[0],
+      segmentName: "lib",
+      sliceName: null,
+      layerName: "app",
+    },
+    {
+      segment: ((root.children[1] as Folder).children[0] as Folder).children[0],
+      segmentName: "lib",
+      sliceName: "search",
+      layerName: "features",
+    },
+  ]);
+});
+
+test("getAllSegments with a prefixed sliced layer", () => {
+  const root = parseIntoFolder(`
+    📂 2_pages
+      📂 editor
+        📂 ui
+          📄 index.ts
+        📄 index.ts
+  `);
+
+  expect(getAllSegments(root)).toEqual([
+    {
+      segment: ((root.children[0] as Folder).children[0] as Folder).children[0],
+      segmentName: "ui",
+      sliceName: "editor",
+      layerName: "pages",
+    },
+  ]);
+});
+
 test("isSliced", () => {
   expect(isSliced("shared")).toBe(false);
   expect(isSliced("app")).toBe(false);
@@ -147,6 +216,27 @@ test("isSliced", () => {
     isSliced({
       type: "folder",
       path: joinFromRoot("project", "src", "entities"),
+      children: [],
+    }),
+  ).toBe(true);
+  expect(
+    isSliced({
+      type: "folder",
+      path: joinFromRoot("project", "src", "_app"),
+      children: [],
+    }),
+  ).toBe(false);
+  expect(
+    isSliced({
+      type: "folder",
+      path: joinFromRoot("project", "src", "6_shared"),
+      children: [],
+    }),
+  ).toBe(false);
+  expect(
+    isSliced({
+      type: "folder",
+      path: joinFromRoot("project", "src", "_entities"),
       children: [],
     }),
   ).toBe(true);

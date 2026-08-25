@@ -33,7 +33,7 @@ function removePrefix(path: string): string {
 /**
  * Extract layers from an FSD root.
  *
- * @returns A mapping of layer name to folder object.
+ * @returns A mapping of layer name to folder object. Prefixed layers (e.g. `6_shared`, `_app`) are mapped to their canonical names; when both variants exist, the prefixed one wins.
  */
 export function getLayers(fsdRoot: Folder): Partial<Record<LayerName, Folder>> {
   return Object.fromEntries(
@@ -127,16 +127,16 @@ export function getAllSlices(
   fsdRoot: Folder,
   additionalSegmentNames: Array<string> = [],
 ): Record<string, Folder & { layerName: string }> {
-  return Object.values(getLayers(fsdRoot))
-    .filter(isSliced)
-    .reduce((slices, layer) => {
+  return Object.entries(getLayers(fsdRoot))
+    .filter(([, layer]) => isSliced(layer))
+    .reduce((slices, [layerName, layer]) => {
       return {
         ...slices,
         ...Object.fromEntries(
           Object.entries(getSlices(layer, additionalSegmentNames)).map(
             ([name, slice]) => [
               name,
-              { ...slice, layerName: basename(layer.path) },
+              { ...slice, layerName: layerName as LayerName },
             ],
           ),
         ),
@@ -181,12 +181,11 @@ export function getAllSegments(fsdRoot: Folder): Array<{
 /**
  * Determine if this layer is sliced.
  *
- * Only layers Shared and App are not sliced, the rest are.
+ * Only layers Shared and App are not sliced, the rest are. Ordering prefixes (e.g. `_app`, `6_shared`) are ignored.
  */
 export function isSliced(layerOrName: Folder | LayerName): boolean {
-  return !unslicedLayers.includes(
-    basename(typeof layerOrName === "string" ? layerOrName : layerOrName.path),
-  );
+  const name = typeof layerOrName === "string" ? layerOrName : layerOrName.path;
+  return !unslicedLayers.includes(removePrefix(basename(name)));
 }
 
 /**
